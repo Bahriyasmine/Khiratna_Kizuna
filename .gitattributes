@@ -1,0 +1,11 @@
+# Text files: Git normalises line endings (Windows / Mac / Linux)
+* text=auto
+
+# Binary files: never touch their bytes (a changed line ending would corrupt them)
+*.pdf     binary
+*.joblib  binary
+*.npz     binary
+*.tif     binary
+*.png     binary
+*.jpg     binary
+*.zip     binary

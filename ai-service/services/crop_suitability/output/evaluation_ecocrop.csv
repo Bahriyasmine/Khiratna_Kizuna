@@ -1,0 +1,23 @@
+crop,ecocrop_name,data_temperature,ecocrop_temperature_limits,rows_inside_temperature_limits_percent,data_ph,ecocrop_ph_limits,rows_inside_ph_limits_percent
+rice,Oryza sativa,20-27,10-36,100,5.0-7.9,4.5-9.0,100
+maize,Zea mays,18-27,10-47,100,5.5-7.0,4.5-8.5,100
+chickpea,Cicer arietinum,17-21,7-35,100,6.0-8.9,4.7-9.5,100
+kidneybeans,Phaseolus vulgaris,15-25,7-32,100,5.5-6.0,4.0-9.0,100
+pigeonpeas,Cajanus cajan,18-37,10-45,100,4.5-7.4,4.5-8.4,100
+mothbeans,Vigna aconitifolia,24-32,13-45,100,3.5-9.9,5.0-8.0,44
+mungbean,Vigna radiata,27-30,8-40,100,6.2-7.2,4.3-8.3,100
+blackgram,Vigna mungo,25-35,8-40,100,6.5-7.8,4.5-7.5,80
+lentil,Lens culinaris,18-30,5-32,100,5.9-7.8,4.5-8.2,100
+pomegranate,Punica granatum,18-25,8-40,100,5.6-7.2,5.8-8.5,85
+banana,Musa acuminata,25-30,12-42,100,5.5-6.5,4.0-8.4,100
+mango,Mangifera indica,27-36,8-48,100,4.5-7.0,4.3-8.5,100
+grapes,Vitis vinifera,9-42,10-38,82,5.5-6.5,4.5-8.5,100
+watermelon,Citrullus lanatus,24-27,15-40,100,6.0-7.0,5.5-7.5,100
+muskmelon,Cucumis melo,27-30,9-35,100,6.0-6.8,5.0-8.7,100
+apple,Malus domestica,21-24,8-33,100,5.5-6.5,4.5-8.0,100
+orange,Citrus sinensis,10-35,13-38,87,6.0-8.0,4.0-8.3,100
+papaya,Carica papaya,23-44,12-44,100,6.5-7.0,4.5-8.0,100
+coconut,Cocos nucifera,25-30,14-38,100,5.5-6.5,4.3-8.7,100
+cotton,Gossypium hirsutum,22-26,15-42,100,5.8-8.0,5.0-9.5,100
+jute,Corchorus capsularis,23-27,13-45,100,6.0-7.5,5.0-8.6,100
+coffee,Coffea arabica,23-28,10-34,100,6.0-7.5,4.3-8.4,100

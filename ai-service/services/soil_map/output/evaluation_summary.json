@@ -1,0 +1,9 @@
+{
+  "areas_mean_abs_error_vs_polygon_percent": 1.2,
+  "areas_mean_abs_error_vs_official_percent": 3.47,
+  "areas_median_abs_error_vs_official_percent": 2.1,
+  "ph_correlation_24_governorates": 0.18,
+  "ph_mean_abs_difference": 0.29,
+  "organic_carbon_correlation_24_governorates": 0.8,
+  "organic_carbon_mean_abs_difference_g_kg": 8.26
+}

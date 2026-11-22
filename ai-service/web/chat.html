@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Khiratna - Farming Assistant</title>
+<style>
+  :root { --green: #2e7d32; --dark: #1b4332; --line: #dfe5df; --soft: #f4f6f4; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: #fff; color: #222; }
+  main { max-width: 900px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { color: var(--dark); font-size: 28px; margin: 0 0 4px; }
+  h2 { color: var(--dark); font-size: 19px; margin: 26px 0 8px; }
+  .sub { color: #666; margin: 0 0 16px; }
+  .menu { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .menu a { padding: 8px 14px; border-radius: 4px; text-decoration: none; color: var(--dark); border: 1px solid var(--line); }
+  .menu a.on { background: var(--green); color: #fff; border-color: var(--green); }
+  .card { border: 1px solid var(--line); border-radius: 8px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .chat { display: flex; flex-direction: column; gap: 10px; height: 460px; overflow-y: auto; padding: 4px; }
+  .msg { padding: 10px 14px; border-radius: 12px; max-width: 85%; line-height: 1.55; font-size: 15px; white-space: pre-wrap; }
+  .me { align-self: flex-end; background: var(--green); color: #fff; border-bottom-right-radius: 3px; }
+  .bot { align-self: flex-start; background: var(--soft); border-bottom-left-radius: 3px; }
+  .ask { display: flex; gap: 10px; margin-top: 12px; }
+  textarea { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; font-family: inherit; resize: vertical; min-height: 48px; }
+  button { padding: 10px 20px; background: var(--green); color: #fff; border: 0; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  button:disabled { background: #9bb89d; }
+  .icon { padding: 10px 14px; background: #fff; color: var(--dark); border: 1px solid var(--line); font-size: 18px; }
+  .icon.on { background: #c62828; color: #fff; border-color: #c62828; }
+  .say { background: none; border: 0; padding: 0 0 0 8px; font-size: 16px; cursor: pointer; vertical-align: middle; }
+  .voice { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #555; margin-top: 8px; }
+  .box { background: var(--soft); border-radius: 6px; padding: 12px 16px; font-size: 14px; line-height: 1.65; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 6px; }
+  th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); }
+  th { background: #e8f5e9; }
+</style>
+</head>
+<body>
+<main>
+  <nav class="menu"><a href="/">🌧️ Rainfall &amp; water</a><a href="/soil-map">🗺️ Soil map</a><a href="/crops">🌱 Crop suitability</a><a href="/market">📈 Market</a><a href="/chat" class="on">💬 Khiratna</a></nav>
+  <h1>💬 Khiratna</h1>
+
+  <div class="card">
+    <div class="chat" id="chat">
+      <div class="msg bot">Hello! I'm Khiratna, your farming assistant. I help you make decisions about farming and energy. How can I help you?</div>
+    </div>
+    <div class="ask"><textarea id="q" placeholder="Type or speak your question (English)…"></textarea>
+      <button id="mic" class="icon" title="Speak your question">🎤</button><button id="send">Send</button></div>
+    <label class="voice"><input type="checkbox" id="autoread"> 🔊 Read the answers aloud</label>
+  </div>
+
+  <h2>⚙️ How it works (RAG)</h2>
+  <div class="box">
+    <b>1. Knowledge base</b> — 1 300 passages from 5 sourced documents: FAO solar irrigation (2018), IRENA solar pumping (2016),
+    Tunisian energy facts (STEG, FTE/ANME, PVGIS), SARE crop rotation manual (USDA, 2020), crop rotation rules (UC IPM, Clemson).<br>
+    <b>2. Chunking</b> — PDFs cleaned first (page headers, page numbers and bibliographies removed, broken words re-joined), then whole sentences packed into ~1 000 characters, the last 2 sentences repeated in the next passage; sheets: one passage per section.<br>
+    <b>3. Embeddings</b> — <i>multilingual-e5-small</i> (local, free, 100 languages), stored in pgvector (PostgreSQL) or local files.<br>
+    <b>4. Retrieval</b> — the 6 closest passages + the 2 best passages of the sourced sheets.<br>
+    <b>5. Answer</b> — Gemini 2.5 Flash (thinking off, ~1-2 s) answers only from these passages, in short English sentences; for costs it calls the energy calculator.<br><b>6. Voice</b> — 🎤 speech-to-text with Whisper (small, run on our server, English, ~2 s) and 🔊 text-to-speech by the browser, both free.<br>
+    <b>Why this retriever?</b> Tested on 24 questions (half in French):
+    <table>
+      <tr><th>Retriever</th><th>Right passage found</th><th>French questions</th><th>Ranking score (MRR)</th></tr>
+      <tr><td><b>E5 multilingual, vectors (used)</b></td><td><b>100 %</b></td><td><b>100 %</b></td><td><b>0.92</b></td></tr>
+      <tr><td>E5, hybrid (vectors + BM25)</td><td>96 %</td><td>92 %</td><td>0.82</td></tr>
+      <tr><td>BM25 keywords only</td><td>92 %</td><td>83 %</td><td>0.72</td></tr>
+      <tr><td>MiniLM-L6, hybrid</td><td>88 %</td><td>75 %</td><td>0.76</td></tr>
+      <tr><td>MiniLM-L6, vectors</td><td>83 %</td><td>67 %</td><td>0.61</td></tr>
+    </table>
+  </div>
+</main>
+
+<script>
+const API = location.port === "8000" ? "" : "http://localhost:8000";
+const $ = id => document.getElementById(id);
+
+function clean(text) {                       // markdown from the AI -> plain text
+  return text.replace(/\*\*(.+?)\*\*/g, "$1").replace(/^\s*[*-]\s+/gm, "• ").replace(/[#`_]/g, "").trim();
+}
+
+// ---------- text to speech (browser, English) ----------
+// The browser loads its voices late: without waiting, Windows uses its default voice (French on a French PC).
+let englishVoice = null;
+function pickVoice() {
+  const en = speechSynthesis.getVoices().filter(v => /^en[-_]/i.test(v.lang));
+  const score = v => (/natural|online/i.test(v.name) ? 4 : 0) + (/google/i.test(v.name) ? 3 : 0)
+                   + (/en[-_]US/i.test(v.lang) ? 2 : /en[-_]GB/i.test(v.lang) ? 1 : 0);
+  englishVoice = en.sort((a, b) => score(b) - score(a))[0] || null;   // best English voice installed
+}
+if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  if (!englishVoice) pickVoice();
+  if (!englishVoice) {
+    alert("No English voice on this computer. Use Edge or Chrome, or add one in Windows: Settings > Time & language > Speech > Add voices > English (United States).");
+    return;
+  }
+  speechSynthesis.cancel();
+  // one sentence at a time: long texts are cut after ~15 s by some browsers
+  const sentences = text.replace(/•/g, "").match(/[^.!?\n]+[.!?]?/g) || [text];
+  sentences.filter(s => s.trim()).forEach(s => {
+    const u = new SpeechSynthesisUtterance(s.trim());
+    u.voice = englishVoice; u.lang = englishVoice.lang; u.rate = 0.95;
+    speechSynthesis.speak(u);
+  });
+}
+
+function bubble(text, who, withSpeaker) {
+  const d = document.createElement("div");
+  d.className = `msg ${who}`;
+  d.textContent = text;
+  if (withSpeaker && "speechSynthesis" in window) {
+    const b = document.createElement("button");
+    b.className = "say"; b.title = "Listen"; b.textContent = "🔊";
+    b.onclick = () => speak(text);
+    d.appendChild(b);
+  }
+  $("chat").appendChild(d);
+  $("chat").scrollTop = $("chat").scrollHeight;
+  return d;
+}
+
+async function ask(question, spoken) {
+  if (!question.trim()) return;
+  bubble(question, "me");
+  $("q").value = ""; $("send").disabled = true;
+  const wait = bubble("Thinking…", "bot");
+  try {
+    let r;
+    try {
+      r = await fetch(API + "/api/chat", { method: "POST", headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify({ question }) });
+    } catch { throw new Error("The Python server is not running. Double-click ai-service/start_api.bat"); }
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.detail || `Server error ${r.status}`);
+    wait.remove();
+    const text = clean(data.answer);
+    bubble(text, "bot", true);
+    if (spoken || $("autoread").checked) speak(text);
+  } catch (err) { wait.remove(); bubble(`⚠️ ${err.message}`, "bot"); }
+  $("send").disabled = false;
+}
+
+// ---------- speech to text: record in the browser, Whisper on our server (/api/stt), English ----------
+// click 🎤 = start recording (button turns red), click again = stop -> text -> question sent
+let recorder = null, recordTimer = null;
+async function startRecording() {
+  if (!navigator.mediaDevices || !window.MediaRecorder) { alert("This browser cannot record audio. Use Chrome or Edge."); return; }
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch { alert("Please allow the microphone for this page (icon in the address bar)."); return; }
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  const parts = [];
+  recorder = new MediaRecorder(stream);
+  recorder.ondataavailable = e => { if (e.data.size) parts.push(e.data); };
+  recorder.onstop = async () => {
+    stream.getTracks().forEach(t => t.stop());
+    clearTimeout(recordTimer); recorder = null;
+    $("mic").classList.remove("on"); $("mic").textContent = "🎤";
+    const audio = new Blob(parts, { type: parts[0]?.type || "audio/webm" });
+    $("q").value = ""; $("q").placeholder = "Listening to your recording…"; $("mic").disabled = true;
+    try {
+      const r = await fetch(API + "/api/stt", { method: "POST", body: audio });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.detail || `Server error ${r.status}`);
+      if (data.text) ask(data.text, true); else bubble("⚠️ I did not hear anything. Please try again.", "bot");
+    } catch (err) { bubble(`⚠️ ${err.message === "Failed to fetch" ? "The Python server is not running." : err.message}`, "bot"); }
+    $("q").placeholder = "Type or speak your question (English)…"; $("mic").disabled = false;
+  };
+  recorder.start();
+  $("mic").classList.add("on"); $("mic").textContent = "⏹";
+  recordTimer = setTimeout(() => recorder && recorder.stop(), 20000);   // stop after 20 s at most
+}
+$("mic").title = "Click, speak in English, click again to send";
+$("mic").addEventListener("click", () => recorder ? recorder.stop() : startRecording());
+
+$("send").addEventListener("click", () => ask($("q").value));
+$("q").addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask($("q").value); } });
+</script>
+</body>
+</html>

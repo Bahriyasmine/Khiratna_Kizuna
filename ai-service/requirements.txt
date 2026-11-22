@@ -1,0 +1,12 @@
+pandas
+numpy
+statsmodels
+matplotlib
+scikit-learn
+joblib
+fastapi
+uvicorn
+pypdf
+psycopg2-binary
+sentence-transformers
+faster-whisper

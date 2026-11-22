@@ -1,0 +1,19 @@
+crop,type,kc_initial,kc_mid,kc_end,kc_dormant,days_initial,days_development,days_mid,days_late,season_start_month,source
+tomato,annual,0.6,1.15,0.8,,30.0,40.0,45.0,30.0,,FAO-56 Table 12 'Tomato'; Table 11 'Mediterranean'
+pepper,annual,0.6,1.05,0.9,,30.0,35.0,40.0,20.0,,FAO-56 Table 12 'Sweet Peppers (bell)'; Table 11 'Europe and Medit.'
+potato,annual,0.5,1.15,0.75,,25.0,30.0,45.0,30.0,,FAO-56 Table 12 'Potato'; Table 11 '(Semi) Arid Climate'
+onion,annual,0.7,1.05,0.75,,15.0,25.0,70.0,40.0,,FAO-56 Table 12 'Onions - dry'; Table 11 'Mediterranean'
+carrot,annual,0.7,1.05,0.95,,30.0,40.0,60.0,20.0,,FAO-56 Table 12 'Carrots' (Kc ini of group 'Small vegetables'); Table 11 'Mediterranean' Feb/Mar
+lettuce,annual,0.7,1.0,0.95,,30.0,40.0,25.0,10.0,,FAO-56 Table 12 'Lettuce' (Kc ini of group 'Small vegetables'); Table 11 'Mediterranean' Nov/Jan
+watermelon,annual,0.4,1.0,0.75,,20.0,30.0,30.0,30.0,,FAO-56 Table 12 'Watermelon'; Table 11 'Italy'
+melon,annual,0.5,1.05,0.75,,25.0,35.0,40.0,20.0,,FAO-56 Table 12 'Sweet Melons'; Table 11 'Mediterranean'
+wheat,annual,0.7,1.15,0.3,,30.0,140.0,40.0,30.0,,FAO-56 Table 12 'Winter Wheat - non-frozen soils'; Table 11 'Mediterranean'
+sorghum,annual,0.3,1.05,0.55,,20.0,35.0,40.0,30.0,,"FAO-56 Table 12 'Sorghum - grain'; Table 11 'USA, Pakis., Med.'"
+citrus,tree,0.65,0.6,0.65,,60.0,90.0,120.0,95.0,1.0,"FAO-56 Table 12 'Citrus, no ground cover, 50% canopy'; Table 11 'Citrus - Mediterranean' (Jan, 365 days)"
+grapes,tree,0.3,0.85,0.45,0.2,20.0,50.0,75.0,60.0,3.0,"FAO-56 Table 12 'Grapes - Table or Raisin'; Table 11 'Grapes - Calif., USA' (Mar); dormant Kc: Table 12 footnote 18"
+almond,tree,0.4,0.9,0.65,0.2,30.0,50.0,130.0,30.0,3.0,"FAO-56 Table 12 'Almonds, no ground cover'; Table 11 'Deciduous Orchard - Calif., USA' (Mar); dormant Kc: footnote 18"
+apricot_peach,tree,0.55,0.9,0.65,0.2,30.0,50.0,130.0,30.0,3.0,"FAO-56 Table 12 'Apricots, Peaches, Stone Fruit - no ground cover, no frosts'; Table 11 'Deciduous Orchard - Calif., USA' (Mar); dormant Kc: footnote 18"
+pistachio,tree,0.4,1.1,0.45,0.2,20.0,60.0,30.0,40.0,2.0,"FAO-56 Table 12 'Pistachios, no ground cover'; Table 11 'Pistachios - Mediterranean' (Feb); dormant Kc: footnote 18"
+alfalfa,all_year,0.4,0.95,0.9,,,,,,,FAO-56 Table 12 'Alfalfa Hay - averaged cutting effects' (Kc mid used all year)
+olive,all_year,0.65,0.7,0.7,,,,,,,FAO-56 Table 12 'Olives (40 to 60% ground coverage)' (Kc mid used all year)
+date_palm,all_year,0.9,0.95,0.95,,,,,,,FAO-56 Table 12 'Date Palms' (Kc mid used all year)

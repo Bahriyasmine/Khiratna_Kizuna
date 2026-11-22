@@ -1,0 +1,25 @@
+governorate,area_km2,PHAQ_median,ELCO_median,ESP_median,TCEQ_median,GYPS_median,TOTC_median,TOTN_median,TAWC_median,CECS_median,BSAT_median,BULK_median,CFRAG_median,ALSA_median,Elev_med_median,Slope_med_median,Relief_med_median,salty_area_percent,sodic_area_percent,main_soils
+Tunis,302,7.96,0.17,2.0,82.0,1.0,7.82,0.9,13.0,12.0,100.0,1.48,20.0,0.0,60.0,3.3,19.0,32.9,32.9,Calcisol (limestone soil) 43%; Solonchak (salty soil) 33%; Arenosol (sand) 12%
+Ariana,444,8.0,0.17,2.0,21.0,1.0,10.0,0.75,14.0,16.0,100.0,1.48,6.0,0.0,16.0,2.0,9.0,26.8,26.8,Gleysol (waterlogged) 37%; Solonchak (salty soil) 27%; Calcisol (limestone soil) 21%
+Ben Arous,648,8.0,0.56,2.0,46.63,1.0,7.82,0.9,14.0,15.0,100.0,1.41,6.0,0.0,141.0,4.4,39.0,1.8,1.8,Cambisol (young soil) 37%; Fluvisol (river deposits) 32%; Calcisol (limestone soil) 15%
+Manouba,1139,7.94,0.95,2.0,46.63,1.0,13.5,0.8,14.0,21.0,100.0,1.41,6.0,0.0,60.0,3.8,32.0,0.0,0.0,Cambisol (young soil) 20%; Vertisol (heavy clay) 16%; Gleysol (waterlogged) 16%
+Nabeul,2834,7.79,0.6,2.0,46.63,1.0,7.79,0.8,14.0,13.0,100.0,1.41,9.0,0.0,82.0,3.3,29.0,7.3,7.3,Cambisol (young soil) 30%; Luvisol (clay-enriched) 22%; Fluvisol (river deposits) 18%
+Zaghouan,2847,8.12,0.56,2.0,46.63,1.0,7.0,0.75,14.0,18.0,100.0,1.41,4.0,0.0,190.0,5.1,44.0,4.5,4.5,Cambisol (young soil) 49%; Calcisol (limestone soil) 14%; Fluvisol (river deposits) 9%
+Bizerte,3500,7.84,0.69,2.0,21.0,1.0,13.5,1.05,13.0,24.0,100.0,1.37,6.0,0.0,154.0,10.0,88.0,8.1,11.5,Vertisol (heavy clay) 22%; Cambisol (young soil) 21%; Calcisol (limestone soil) 15%
+Beja,3673,7.79,0.95,1.0,173.3,1.0,10.0,0.9,12.0,21.0,100.0,1.33,6.0,0.0,228.0,10.5,91.0,0.0,8.1,"Leptosol (shallow, stony) 31%; Vertisol (heavy clay) 21%; Cambisol (young soil) 15%"
+Jendouba,3091,6.82,0.69,2.0,0.0,2.0,7.82,0.9,12.0,14.0,91.0,1.39,6.0,0.0,295.0,15.0,136.0,0.0,14.0,"Vertisol (heavy clay) 35%; Fluvisol (river deposits) 28%; Leptosol (shallow, stony) 10%"
+Kef,5083,7.81,0.56,2.0,46.63,1.0,10.0,0.8,14.0,19.0,100.0,1.39,6.0,0.0,565.0,5.9,49.0,0.0,16.7,Cambisol (young soil) 51%; Gleysol (waterlogged) 11%; Fluvisol (river deposits) 11%
+Siliana,4677,8.12,0.56,2.0,46.63,1.0,5.85,0.8,12.0,19.0,100.0,1.39,6.0,0.0,600.0,8.0,66.0,1.4,5.3,"Cambisol (young soil) 46%; Leptosol (shallow, stony) 30%; Fluvisol (river deposits) 7%"
+Sousse,2300,7.75,1.95,2.0,120.0,1.06,7.82,0.75,13.0,14.0,100.0,1.48,6.0,0.0,58.0,1.6,12.0,28.0,28.0,Calcisol (limestone soil) 25%; Solonetz (sodic soil) 21%; Luvisol (clay-enriched) 12%
+Monastir,1084,7.7,1.95,6.0,26.5,1.06,7.82,0.9,12.0,14.0,100.0,1.43,9.0,0.0,67.0,1.6,12.0,16.4,16.4,Luvisol (clay-enriched) 39%; Fluvisol (river deposits) 26%; Calcisol (limestone soil) 17%
+Mahdia,2892,7.92,1.7,2.0,120.0,1.06,4.65,0.55,13.0,12.0,100.0,1.48,6.0,0.0,92.0,1.5,12.0,11.5,11.5,Calcisol (limestone soil) 56%; Solonetz (sodic soil) 10%; Cambisol (young soil) 9%
+Sfax,6979,8.0,0.93,2.0,120.0,1.0,7.0,0.7,13.0,12.0,100.0,1.48,11.0,0.0,104.0,1.55,12.0,8.2,8.2,"Calcisol (limestone soil) 44%; Cambisol (young soil) 15%; Leptosol (shallow, stony) 11%"
+Kairouan,6572,8.05,0.93,2.0,88.0,1.06,5.0,0.55,13.0,13.0,100.0,1.39,6.0,0.0,183.0,1.7,13.0,12.1,12.1,Cambisol (young soil) 26%; Regosol (weakly developed) 18%; Fluvisol (river deposits) 15%
+Kasserine,8180,7.97,0.69,2.0,72.0,1.0,7.0,0.8,13.0,14.0,100.0,1.39,12.0,0.0,682.0,3.2,30.0,0.8,0.8,"Calcisol (limestone soil) 26%; Leptosol (shallow, stony) 22%; Cambisol (young soil) 17%"
+Sidi Bouzid,7418,7.97,0.64,2.0,120.0,1.0,7.0,0.7,13.0,14.0,100.0,1.39,6.0,0.0,320.0,1.9,16.0,6.7,6.7,"Cambisol (young soil) 34%; Leptosol (shallow, stony) 19%; Calcisol (limestone soil) 18%"
+Gabes,7535,8.0,1.22,2.0,120.0,1.12,3.9,0.47,12.0,12.0,100.0,1.3,4.0,0.0,105.0,1.9,16.0,8.5,4.6,"Gypsisol (gypsum soil) 34%; Leptosol (shallow, stony) 28%; Calcisol (limestone soil) 12%"
+Medenine,9205,8.1,1.01,3.0,88.0,8.0,2.67,0.47,14.0,11.0,100.0,1.35,8.0,0.0,102.0,1.2,10.0,15.4,10.2,Regosol (weakly developed) 36%; Calcisol (limestone soil) 27%; Solonchak (salty soil) 15%
+Tataouine,38064,7.9,0.93,2.0,88.0,8.0,2.0,0.48,14.0,11.0,100.0,1.35,8.0,0.0,249.0,2.4,21.0,0.3,0.3,"Regosol (weakly developed) 51%; Arenosol (sand) 32%; Leptosol (shallow, stony) 15%"
+Gafsa,7562,7.7,1.22,2.0,62.3,1.0,4.75,0.5,13.0,14.0,100.0,1.3,12.0,0.0,354.0,3.1,23.0,4.9,4.9,"Leptosol (shallow, stony) 34%; Cambisol (young soil) 17%; Gypsisol (gypsum soil) 15%"
+Tozeur,6037,7.96,15.0,14.0,82.0,56.22,4.8,0.5,14.0,12.0,100.0,1.38,4.0,0.0,18.0,1.6,14.0,56.1,39.7,Solonchak (salty soil) 56%; Arenosol (sand) 23%; Gypsisol (gypsum soil) 14%
+Kebili,22274,6.3,0.0,2.0,0.0,0.0,2.67,0.4,7.0,3.0,91.0,1.49,3.0,0.0,196.0,4.0,33.0,23.4,17.3,Arenosol (sand) 51%; Solonchak (salty soil) 23%; Gypsisol (gypsum soil) 16%

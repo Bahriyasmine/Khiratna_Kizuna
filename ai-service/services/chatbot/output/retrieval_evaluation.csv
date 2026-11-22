@@ -1,0 +1,121 @@
+embedder,mode,language,topic,question,hit@6,rr@10
+minilm,dense,en,energy,How much does STEG charge per kWh for medium voltage?,True,1.0
+minilm,dense,fr,energy,Quel est le tarif STEG en moyenne tension ?,False,0.1
+minilm,dense,en,energy,What subsidy does the FTE give per kWp for solar pumping?,True,0.5
+minilm,dense,fr,energy,Quelle subvention l'Etat donne pour une pompe solaire agricole ?,True,1.0
+minilm,dense,en,energy,How much electricity does 1 kWp of solar panels produce in Tunisia?,True,1.0
+minilm,dense,fr,energy,D'où vient l'électricité en Tunisie ?,True,0.5
+minilm,dense,en,energy,What are the risks of solar irrigation for groundwater?,True,1.0
+minilm,dense,fr,energy,Quels sont les risques du pompage solaire pour les nappes d'eau souterraines ?,True,0.5
+minilm,dense,en,energy,Is solar pumping cheaper than a diesel pump over its lifetime?,True,1.0
+minilm,dense,fr,energy,Pompe solaire ou pompe diesel : laquelle coûte le moins cher ?,True,0.25
+minilm,dense,en,energy,Do I need batteries or a water tank for a solar irrigation pump?,True,0.5
+minilm,dense,fr,energy,Quels pays subventionnent les pompes solaires d'irrigation ?,True,0.2
+minilm,dense,en,rotation,How many years should I wait before planting tomatoes again in the same field?,True,0.3333333333333333
+minilm,dense,fr,rotation,Combien d'années attendre avant de replanter des tomates au même endroit ?,False,0.14285714285714285
+minilm,dense,en,rotation,Can I plant potatoes after tomatoes?,True,1.0
+minilm,dense,fr,rotation,Peut-on planter des pommes de terre après des tomates ?,False,0.0
+minilm,dense,en,rotation,What should I plant after tomato to control Verticillium wilt?,True,1.0
+minilm,dense,fr,rotation,Quelle culture planter après la tomate contre la fusariose ?,True,0.3333333333333333
+minilm,dense,en,rotation,Which crops belong to the same family as watermelon?,True,1.0
+minilm,dense,en,rotation,Why plant legumes before a demanding crop?,True,1.0
+minilm,dense,fr,rotation,Pourquoi planter des légumineuses comme le pois chiche avant le blé ?,True,1.0
+minilm,dense,en,rotation,How do cover crops help a crop rotation?,True,1.0
+minilm,dense,fr,rotation,Comment lutter contre la gale commune de la pomme de terre par la rotation ?,False,0.0
+minilm,dense,fr,rotation,Donne-moi un exemple de rotation sur 3 ans,True,0.2
+-,bm25,en,energy,How much does STEG charge per kWh for medium voltage?,True,1.0
+-,bm25,fr,energy,Quel est le tarif STEG en moyenne tension ?,True,1.0
+-,bm25,en,energy,What subsidy does the FTE give per kWp for solar pumping?,True,1.0
+-,bm25,fr,energy,Quelle subvention l'Etat donne pour une pompe solaire agricole ?,True,1.0
+-,bm25,en,energy,How much electricity does 1 kWp of solar panels produce in Tunisia?,True,1.0
+-,bm25,fr,energy,D'où vient l'électricité en Tunisie ?,False,0.0
+-,bm25,en,energy,What are the risks of solar irrigation for groundwater?,True,1.0
+-,bm25,fr,energy,Quels sont les risques du pompage solaire pour les nappes d'eau souterraines ?,True,0.2
+-,bm25,en,energy,Is solar pumping cheaper than a diesel pump over its lifetime?,True,1.0
+-,bm25,fr,energy,Pompe solaire ou pompe diesel : laquelle coûte le moins cher ?,True,0.3333333333333333
+-,bm25,en,energy,Do I need batteries or a water tank for a solar irrigation pump?,True,1.0
+-,bm25,fr,energy,Quels pays subventionnent les pompes solaires d'irrigation ?,True,0.16666666666666666
+-,bm25,en,rotation,How many years should I wait before planting tomatoes again in the same field?,True,0.5
+-,bm25,fr,rotation,Combien d'années attendre avant de replanter des tomates au même endroit ?,False,0.14285714285714285
+-,bm25,en,rotation,Can I plant potatoes after tomatoes?,True,1.0
+-,bm25,fr,rotation,Peut-on planter des pommes de terre après des tomates ?,True,0.3333333333333333
+-,bm25,en,rotation,What should I plant after tomato to control Verticillium wilt?,True,1.0
+-,bm25,fr,rotation,Quelle culture planter après la tomate contre la fusariose ?,True,0.5
+-,bm25,en,rotation,Which crops belong to the same family as watermelon?,True,1.0
+-,bm25,en,rotation,Why plant legumes before a demanding crop?,True,1.0
+-,bm25,fr,rotation,Pourquoi planter des légumineuses comme le pois chiche avant le blé ?,True,1.0
+-,bm25,en,rotation,How do cover crops help a crop rotation?,True,1.0
+-,bm25,fr,rotation,Comment lutter contre la gale commune de la pomme de terre par la rotation ?,True,1.0
+-,bm25,fr,rotation,Donne-moi un exemple de rotation sur 3 ans,True,0.3333333333333333
+minilm,hybrid,en,energy,How much does STEG charge per kWh for medium voltage?,True,1.0
+minilm,hybrid,fr,energy,Quel est le tarif STEG en moyenne tension ?,True,1.0
+minilm,hybrid,en,energy,What subsidy does the FTE give per kWp for solar pumping?,True,1.0
+minilm,hybrid,fr,energy,Quelle subvention l'Etat donne pour une pompe solaire agricole ?,True,1.0
+minilm,hybrid,en,energy,How much electricity does 1 kWp of solar panels produce in Tunisia?,True,1.0
+minilm,hybrid,fr,energy,D'où vient l'électricité en Tunisie ?,False,0.0
+minilm,hybrid,en,energy,What are the risks of solar irrigation for groundwater?,True,1.0
+minilm,hybrid,fr,energy,Quels sont les risques du pompage solaire pour les nappes d'eau souterraines ?,True,0.25
+minilm,hybrid,en,energy,Is solar pumping cheaper than a diesel pump over its lifetime?,True,1.0
+minilm,hybrid,fr,energy,Pompe solaire ou pompe diesel : laquelle coûte le moins cher ?,True,0.3333333333333333
+minilm,hybrid,en,energy,Do I need batteries or a water tank for a solar irrigation pump?,True,1.0
+minilm,hybrid,fr,energy,Quels pays subventionnent les pompes solaires d'irrigation ?,True,1.0
+minilm,hybrid,en,rotation,How many years should I wait before planting tomatoes again in the same field?,True,1.0
+minilm,hybrid,fr,rotation,Combien d'années attendre avant de replanter des tomates au même endroit ?,True,0.25
+minilm,hybrid,en,rotation,Can I plant potatoes after tomatoes?,True,1.0
+minilm,hybrid,fr,rotation,Peut-on planter des pommes de terre après des tomates ?,True,0.3333333333333333
+minilm,hybrid,en,rotation,What should I plant after tomato to control Verticillium wilt?,True,1.0
+minilm,hybrid,fr,rotation,Quelle culture planter après la tomate contre la fusariose ?,True,1.0
+minilm,hybrid,en,rotation,Which crops belong to the same family as watermelon?,True,1.0
+minilm,hybrid,en,rotation,Why plant legumes before a demanding crop?,True,1.0
+minilm,hybrid,fr,rotation,Pourquoi planter des légumineuses comme le pois chiche avant le blé ?,True,1.0
+minilm,hybrid,en,rotation,How do cover crops help a crop rotation?,True,1.0
+minilm,hybrid,fr,rotation,Comment lutter contre la gale commune de la pomme de terre par la rotation ?,False,0.0
+minilm,hybrid,fr,rotation,Donne-moi un exemple de rotation sur 3 ans,False,0.125
+e5,dense,en,energy,How much does STEG charge per kWh for medium voltage?,True,1.0
+e5,dense,fr,energy,Quel est le tarif STEG en moyenne tension ?,True,1.0
+e5,dense,en,energy,What subsidy does the FTE give per kWp for solar pumping?,True,1.0
+e5,dense,fr,energy,Quelle subvention l'Etat donne pour une pompe solaire agricole ?,True,1.0
+e5,dense,en,energy,How much electricity does 1 kWp of solar panels produce in Tunisia?,True,1.0
+e5,dense,fr,energy,D'où vient l'électricité en Tunisie ?,True,1.0
+e5,dense,en,energy,What are the risks of solar irrigation for groundwater?,True,1.0
+e5,dense,fr,energy,Quels sont les risques du pompage solaire pour les nappes d'eau souterraines ?,True,1.0
+e5,dense,en,energy,Is solar pumping cheaper than a diesel pump over its lifetime?,True,1.0
+e5,dense,fr,energy,Pompe solaire ou pompe diesel : laquelle coûte le moins cher ?,True,1.0
+e5,dense,en,energy,Do I need batteries or a water tank for a solar irrigation pump?,True,0.5
+e5,dense,fr,energy,Quels pays subventionnent les pompes solaires d'irrigation ?,True,0.5
+e5,dense,en,rotation,How many years should I wait before planting tomatoes again in the same field?,True,1.0
+e5,dense,fr,rotation,Combien d'années attendre avant de replanter des tomates au même endroit ?,True,1.0
+e5,dense,en,rotation,Can I plant potatoes after tomatoes?,True,1.0
+e5,dense,fr,rotation,Peut-on planter des pommes de terre après des tomates ?,True,1.0
+e5,dense,en,rotation,What should I plant after tomato to control Verticillium wilt?,True,1.0
+e5,dense,fr,rotation,Quelle culture planter après la tomate contre la fusariose ?,True,0.5
+e5,dense,en,rotation,Which crops belong to the same family as watermelon?,True,1.0
+e5,dense,en,rotation,Why plant legumes before a demanding crop?,True,1.0
+e5,dense,fr,rotation,Pourquoi planter des légumineuses comme le pois chiche avant le blé ?,True,1.0
+e5,dense,en,rotation,How do cover crops help a crop rotation?,True,1.0
+e5,dense,fr,rotation,Comment lutter contre la gale commune de la pomme de terre par la rotation ?,True,0.5
+e5,dense,fr,rotation,Donne-moi un exemple de rotation sur 3 ans,True,1.0
+e5,hybrid,en,energy,How much does STEG charge per kWh for medium voltage?,True,1.0
+e5,hybrid,fr,energy,Quel est le tarif STEG en moyenne tension ?,True,1.0
+e5,hybrid,en,energy,What subsidy does the FTE give per kWp for solar pumping?,True,1.0
+e5,hybrid,fr,energy,Quelle subvention l'Etat donne pour une pompe solaire agricole ?,True,1.0
+e5,hybrid,en,energy,How much electricity does 1 kWp of solar panels produce in Tunisia?,True,1.0
+e5,hybrid,fr,energy,D'où vient l'électricité en Tunisie ?,False,0.0
+e5,hybrid,en,energy,What are the risks of solar irrigation for groundwater?,True,1.0
+e5,hybrid,fr,energy,Quels sont les risques du pompage solaire pour les nappes d'eau souterraines ?,True,0.5
+e5,hybrid,en,energy,Is solar pumping cheaper than a diesel pump over its lifetime?,True,1.0
+e5,hybrid,fr,energy,Pompe solaire ou pompe diesel : laquelle coûte le moins cher ?,True,0.3333333333333333
+e5,hybrid,en,energy,Do I need batteries or a water tank for a solar irrigation pump?,True,1.0
+e5,hybrid,fr,energy,Quels pays subventionnent les pompes solaires d'irrigation ?,True,0.3333333333333333
+e5,hybrid,en,rotation,How many years should I wait before planting tomatoes again in the same field?,True,1.0
+e5,hybrid,fr,rotation,Combien d'années attendre avant de replanter des tomates au même endroit ?,True,0.5
+e5,hybrid,en,rotation,Can I plant potatoes after tomatoes?,True,1.0
+e5,hybrid,fr,rotation,Peut-on planter des pommes de terre après des tomates ?,True,1.0
+e5,hybrid,en,rotation,What should I plant after tomato to control Verticillium wilt?,True,1.0
+e5,hybrid,fr,rotation,Quelle culture planter après la tomate contre la fusariose ?,True,0.3333333333333333
+e5,hybrid,en,rotation,Which crops belong to the same family as watermelon?,True,1.0
+e5,hybrid,en,rotation,Why plant legumes before a demanding crop?,True,1.0
+e5,hybrid,fr,rotation,Pourquoi planter des légumineuses comme le pois chiche avant le blé ?,True,1.0
+e5,hybrid,en,rotation,How do cover crops help a crop rotation?,True,1.0
+e5,hybrid,fr,rotation,Comment lutter contre la gale commune de la pomme de terre par la rotation ?,True,1.0
+e5,hybrid,fr,rotation,Donne-moi un exemple de rotation sur 3 ans,True,1.0
