@@ -1,0 +1,16 @@
+product,ecocrop_min_temperature,frost_sensitive
+watermelon,15.0,True
+melon,9.0,True
+tomato,7.0,True
+pepper,8.0,True
+potato,7.0,True
+sorghum,8.0,True
+onion,4.0,False
+carrot,3.0,False
+lettuce,5.0,False
+wheat,6.0,False
+barley,2.0,False
+artichoke,5.0,False
+lentil,5.0,False
+chickpea,7.0,True
+faba_bean,5.0,False

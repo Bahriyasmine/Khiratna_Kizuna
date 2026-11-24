@@ -1,0 +1,20 @@
+{
+  "accuracy_by_model_percent": {
+    "random_forest (our model)": 99.5,
+    "one decision tree": 99.1,
+    "k-nearest neighbours": 97.6,
+    "logistic regression": 97.0
+  },
+  "random_forest_accuracy_with_noisy_inputs_percent": {
+    "0% noise": 99.5,
+    "10% noise": 88.0,
+    "20% noise": 69.0
+  },
+  "ecocrop_rows_inside_temperature_limits_percent": 98.6,
+  "ecocrop_rows_inside_ph_limits_percent": 95.9,
+  "tunisia_top_crop_count": {
+    "pigeonpeas": 21,
+    "mango": 2,
+    "papaya": 1
+  }
+}

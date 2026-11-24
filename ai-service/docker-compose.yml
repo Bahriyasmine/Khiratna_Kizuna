@@ -1,0 +1,19 @@
+# PostgreSQL 16 + pgvector: the vector store of the chatbot (and Yassine's database).
+# Start:  docker compose up -d        (from the ai-service/ folder, Docker Desktop must be running)
+# Stop:   docker compose down          (the data stays in the "pgdata" volume)
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: farm-pgvector
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: farm
+    ports:
+      - "5433:5432"     # 5433 on this PC, so it never conflicts with another PostgreSQL on 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  pgdata:

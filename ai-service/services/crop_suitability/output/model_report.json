@@ -1,0 +1,67 @@
+{
+  "accuracy": 0.9936,
+  "rows": 2200,
+  "crops": [
+    "apple",
+    "banana",
+    "blackgram",
+    "chickpea",
+    "coconut",
+    "coffee",
+    "cotton",
+    "grapes",
+    "jute",
+    "kidneybeans",
+    "lentil",
+    "maize",
+    "mango",
+    "mothbeans",
+    "mungbean",
+    "muskmelon",
+    "orange",
+    "papaya",
+    "pigeonpeas",
+    "pomegranate",
+    "rice",
+    "watermelon"
+  ],
+  "input_ranges": {
+    "N": [
+      0.0,
+      140.0
+    ],
+    "P": [
+      5.0,
+      145.0
+    ],
+    "K": [
+      5.0,
+      205.0
+    ],
+    "temperature": [
+      8.8,
+      43.7
+    ],
+    "humidity": [
+      14.3,
+      100.0
+    ],
+    "ph": [
+      3.5,
+      9.9
+    ],
+    "rainfall": [
+      20.2,
+      298.6
+    ]
+  },
+  "importance": {
+    "rainfall": 0.231,
+    "humidity": 0.216,
+    "K": 0.174,
+    "P": 0.148,
+    "N": 0.102,
+    "temperature": 0.074,
+    "ph": 0.054
+  }
+}

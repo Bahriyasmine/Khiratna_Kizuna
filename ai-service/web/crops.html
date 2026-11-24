@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crop and Soil Suitability</title>
+<style>
+  :root { --green: #2e7d32; --dark: #1b4332; --line: #dfe5df; --soft: #f4f6f4; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: #fff; color: #222; }
+  main { max-width: 1150px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { color: var(--dark); font-size: 30px; margin: 0 0 18px; }
+  h2 { color: var(--dark); font-size: 22px; margin: 32px 0 10px; }
+  .menu { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .menu a { padding: 8px 14px; border-radius: 4px; text-decoration: none; color: var(--dark); border: 1px solid var(--line); }
+  .menu a.on { background: var(--green); color: #fff; border-color: var(--green); }
+  .card { border: 1px solid var(--line); border-radius: 6px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.07); }
+  label { display: block; font-size: 15px; color: #333; margin: 0 0 6px; }
+  label small { color: #888; }
+  input { width: 100%; padding: 9px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; margin-bottom: 14px; }
+  button { width: 100%; padding: 11px; background: var(--green); color: #fff; border: 0; border-radius: 4px;
+           font-size: 16px; font-weight: 600; cursor: pointer; }
+  #error { color: #b71c1c; margin-top: 10px; }
+  .list { border: 1px solid var(--line); border-radius: 6px; }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 11px 16px; border-bottom: 1px solid var(--line); }
+  .row:last-child { border-bottom: 0; }
+  .row small { color: #888; }
+  .badge { background: #198754; color: #fff; border-radius: 12px; padding: 3px 10px; font-size: 13px; font-weight: 700; }
+  .warn { background: #fff4e5; border-left: 4px solid #f0a020; padding: 8px 10px; margin: 8px 0; font-size: 14px; }
+  .box { background: var(--soft); border-radius: 6px; padding: 14px 18px; font-size: 14px; line-height: 1.65; }
+  .box ol { margin: 6px 0; padding-left: 20px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #e8f5e9; }
+</style>
+</head>
+<body>
+<main>
+  <nav class="menu"><a href="/">🌧️ Rainfall &amp; water</a><a href="/soil-map">🗺️ Soil map</a><a href="/crops" class="on">🌱 Crop suitability</a><a href="/market">📈 Market</a><a href="/chat">💬 Khiratna</a></nav>
+  <h1>🌾 Crop and Soil Suitability</h1>
+
+  <div class="card">
+    <form id="form">
+      <label>Nitrogen (N): <small id="r-N"></small></label><input id="N" type="number" step="any" required>
+      <label>Phosphorus (P): <small id="r-P"></small></label><input id="P" type="number" step="any" required>
+      <label>Potassium (K): <small id="r-K"></small></label><input id="K" type="number" step="any" required>
+      <label>Temperature (°C): <small id="r-temperature"></small></label><input id="temperature" type="number" step="any" required>
+      <label>Humidity (%): <small id="r-humidity"></small></label><input id="humidity" type="number" step="any" min="0" max="100" required>
+      <label>Soil pH: <small id="r-ph"></small></label><input id="ph" type="number" step="any" min="0" max="14" required>
+      <label>Rainfall (mm): <small id="r-rainfall"></small></label><input id="rainfall" type="number" step="any" min="0" required>
+      <button type="submit">Predict Suitable Crop</button>
+    </form>
+    <div id="error"></div>
+  </div>
+
+  <section id="result" style="display:none">
+    <h2>🌱 Predicted Crop Suitability (sorted):</h2>
+    <div id="warnings"></div>
+    <div class="list" id="crops"></div>
+  </section>
+
+  <h2>⚙️ How it works</h2>
+  <div class="box">
+    <ol>
+      <li><b>The data:</b> the Kaggle "Crop Recommendation Dataset": 2 200 examples (100 for each of 22 crops). Each example gives
+        the soil nitrogen, phosphorus, potassium, the temperature, the humidity, the soil pH, the rainfall, and the crop that suits them.</li>
+      <li><b>The AI model:</b> a <b>Random Forest</b> = 300 decision trees. Each tree learns rules such as
+        "lots of rain + high humidity → rice". For your values, every tree votes for one crop.</li>
+      <li><b>The result:</b> the % next to each crop = the share of the 300 trees that voted for it. The list is sorted.</li>
+      <li><b>Accuracy:</b> <span id="acc"></span> — tested 5 times on 20 % of the data the model had not seen (5-fold cross-validation).</li>
+      <li><b>Most important inputs:</b> <span id="imp"></span>.</li>
+    </ol>
+    <b>Be honest with the jury:</b> the dataset description says it was <i>"built by augmenting datasets of rainfall, climate
+    and fertilizer data available for India"</i>. So the model knows Indian conditions and 22 crops (rice, coffee, mango...);
+    some Tunisian crops (olive, wheat, date palm) are not in it. Values outside the training ranges (shown under each field) give a warning.
+  </div>
+
+  <h2>📚 Datasets</h2>
+  <table>
+    <tr><th>Dataset</th><th>What it contains</th><th>Used?</th><th>Link</th></tr>
+    <tr><td><b>Crop Recommendation</b> (Atharva Ingle, 2020, Apache 2.0)</td>
+      <td>2 200 rows: N, P, K, temperature, humidity, pH, rainfall → 22 crops</td>
+      <td>✅ Yes: trains the AI model (accuracy 99.4 %)</td>
+      <td><a href="https://www.kaggle.com/datasets/atharvaingle/crop-recommendation-dataset" target="_blank">Kaggle</a></td></tr>
+    <tr><td>Crop and Soil Dataset (shankar, 2025)</td>
+      <td>8 000 rows: temperature, humidity, moisture, soil type, crop, N, P, K → 7 fertilizers</td>
+      <td>❌ No: a model only reaches 14 % accuracy = pure chance (1 in 7). The fertilizer labels are random.</td>
+      <td><a href="https://www.kaggle.com/datasets/shankarpriya2913/crop-and-soil-dataset" target="_blank">Kaggle</a></td></tr>
+    <tr><td>Soil Fertility Dataset (used by the notebook "Soil Fertility Prediction")</td>
+      <td>880 rows: N, P, K, pH, EC, OC, S, Zn, Fe, Cu, Mn, B → fertility class</td>
+      <td>❌ Not in this form: its N, P, K use other units (N average 247 vs 50 here)</td>
+      <td><a href="https://www.kaggle.com/datasets/rahuljaiswalonkaggle/soil-fertility-dataset" target="_blank">Kaggle</a> ·
+          <a href="https://www.kaggle.com/code/nouraalgohary/soil-fertility-prediction" target="_blank">notebook</a></td></tr>
+  </table>
+</main>
+
+<script>
+const FIELDS = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"];
+const NAMES = { N: "nitrogen", P: "phosphorus", K: "potassium", ph: "pH" };
+
+async function getJSON(path) {
+  const API = location.port === "8000" ? "" : "http://localhost:8000";
+  let r;
+  try { r = await fetch(API + path); }
+  catch { throw new Error("The Python server is not running. Double-click ai-service/start_api.bat"); }
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.detail || `Server error ${r.status}`);
+  return data;
+}
+const nice = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+(async () => {
+  try {
+    const m = await getJSON("/api/crops/model");
+    FIELDS.forEach(f => {
+      const [lo, hi] = m.input_ranges[f];
+      document.getElementById(`r-${f}`).textContent = `(data range ${lo} – ${hi})`;
+    });
+    document.getElementById("acc").textContent = `${(m.accuracy * 100).toFixed(1)} %`;
+    document.getElementById("imp").textContent = Object.entries(m.importance)
+      .map(([f, v]) => `${NAMES[f] || f} ${(v * 100).toFixed(0)} %`).join(", ");
+  } catch (err) { document.getElementById("error").textContent = err.message; }
+})();
+
+document.getElementById("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  document.getElementById("error").textContent = "";
+  const q = new URLSearchParams(Object.fromEntries(FIELDS.map(f => [f, document.getElementById(f).value])));
+  try {
+    const r = await getJSON(`/api/crops/predict?${q}`);
+    document.getElementById("warnings").innerHTML = r.warnings.map(w => `<div class="warn">⚠️ ${w}</div>`).join("");
+    document.getElementById("crops").innerHTML = r.crops.map(c => `
+      <div class="row"><span>${c.name}</span>
+        <span class="badge">${c.percent.toFixed(2)}%</span></div>`).join("");
+    document.getElementById("result").style.display = "block";
+    document.getElementById("result").scrollIntoView({ behavior: "smooth" });
+  } catch (err) { document.getElementById("error").textContent = err.message; }
+});
+</script>
+</body>
+</html>

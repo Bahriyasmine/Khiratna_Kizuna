@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rainfall Forecast and Crop Water Needs</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root { --green: #2e7d32; --dark: #1b4332; --line: #dfe5df; --head: #e8f5e9; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: #fff; color: #222; }
+  main { max-width: 1150px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { color: var(--dark); font-size: 26px; margin: 0 0 18px; }
+  h2 { color: var(--dark); font-size: 19px; font-weight: 500; margin: 32px 0 8px; }
+  h2 b { font-weight: 700; }
+  form { display: grid; grid-template-columns: 2fr 2fr 1fr 1fr; gap: 14px 16px; }
+  label { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: #444; }
+  select, input { padding: 9px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; background: #fff; }
+  button { grid-column: 1 / -1; padding: 11px; background: var(--green); color: #fff; border: 0;
+           border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; }
+  button:hover { background: #256b29; }
+  #error { color: #b71c1c; margin-top: 12px; }
+  #result { display: none; }
+  .chart { position: relative; height: 380px; margin-top: 10px; }
+  .totals { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0; }
+  .totals div { flex: 1 1 180px; border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; }
+  .totals span { display: block; font-size: 13px; color: #666; }
+  .totals strong { font-size: 20px; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th { background: var(--head); text-align: left; padding: 10px; border-bottom: 2px solid #333; }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--line); }
+  td.forecast { color: #1f5fa8; font-style: italic; }
+  .sources { margin-top: 28px; font-size: 13px; color: #555; line-height: 1.6; }
+  .how h2 { color: var(--dark); font-size: 21px; margin: 34px 0 10px; }
+  .box { background: #f4f6f4; border-radius: 6px; padding: 14px 18px; font-size: 14px; line-height: 1.65; }
+  .box ol { margin: 6px 0; padding-left: 20px; }
+  .box code { background: #fff; padding: 2px 6px; border-radius: 3px; border: 1px solid var(--line); }
+  .src { font-size: 14px; } .src td, .src th { padding: 7px 8px; vertical-align: top; } .src th { border-bottom: 1px solid var(--line); }
+  .menu { display: flex; gap: 8px; margin-bottom: 22px; }
+  .menu a { padding: 8px 14px; border-radius: 4px; text-decoration: none; color: var(--dark); border: 1px solid var(--line); }
+  .menu a.on { background: var(--green); color: #fff; border-color: var(--green); }
+  @media (max-width: 700px) { form { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <nav class="menu"><a href="/" class="on">🌧️ Rainfall &amp; water</a><a href="/soil-map">🗺️ Soil map</a><a href="/crops">🌱 Crop suitability</a><a href="/market">📈 Market</a><a href="/chat">💬 Khiratna</a></nav>
+  <h1>🌧️ Rainfall Forecast and Crop Water Needs</h1>
+
+  <form id="form">
+    <label>Select Region: <select id="region"></select></label>
+    <label>Select Crop: <select id="crop"></select></label>
+    <label>Start (planting) month: <input type="month" id="start" value="2026-02" required></label>
+    <label>End month: <input type="month" id="end" value="2026-06" required></label>
+    <button type="submit">Generate Forecast</button>
+  </form>
+  <div id="error"></div>
+
+  <section id="result">
+    <h2>📍 Forecast for <b id="title"></b></h2>
+    <div class="chart"><canvas id="chart"></canvas></div>
+
+    <div class="totals">
+      <div><span>Total rain</span><strong id="t-rain"></strong></div>
+      <div><span>Total crop need (ETc)</span><strong id="t-need"></strong></div>
+      <div><span>Total water to add</span><strong id="t-add"></strong></div>
+      <div><span>Water to add per hectare</span><strong id="t-m3"></strong></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Month</th><th>Rainfall (mm)</th><th>Rain is</th><th>Useful rain = 80% (mm)</th><th>Kc</th><th>ETc (mm)</th>
+          <th>Water to add (mm)</th><th>Water to add (m³/ha)</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <p class="sources">
+      <b>Formula:</b> water to add = ETc − 80% of the rain (never below 0). ETc = ET0 × Kc. 1 mm on 1 ha = 10 m³.<br>
+      <b>Rain:</b> real values from <a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank">Open-Meteo (ERA5)</a>,
+      then <i>forecast</i> by a SARIMA model trained on rain since 2000.<br>
+      <b>ET0:</b> <a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank">Open-Meteo</a> (FAO-56 Penman-Monteith),
+      real for past months, otherwise the usual value of the month (2010–2025).<br>
+      <b>Kc:</b> <span id="kc-source"></span> —
+      <a href="https://www.fao.org/4/x0490e/x0490e0b.htm" target="_blank">FAO-56, chapter 6</a>.
+    </p>
+  </section>
+
+  <section class="how">
+    <h2>⚙️ How it works</h2>
+    <div class="box">
+      <b>The question:</b> how much water must the farmer add each month, so that the crop gets what it needs?
+      <ol>
+        <li><b>The rain (AI forecast).</b> We downloaded the real rain of every day since 2000 for the 24 governorates
+          (Open-Meteo / ERA5). Months already passed show the <b>real</b> rain (up to October 2026).
+          For the next months, an AI time-series model, <b>SARIMA</b>, learns the yearly rhythm of each region
+          (wet winter, dry summer) from 26 years of monthly rain and <b>forecasts</b> the rain up to December 2027
+          (dashed line on the chart). One model per governorate.<br><b>Tested on the past</b> (3 periods × 24 governorates: real data hidden, 14 months forecast, then compared): error on the 14-month total <b>11 %</b> (simple monthly average: 14 %); month by month ±17 mm.</li>
+        <li><b>How much water the weather takes (ET0).</b> Sun, heat, wind and dry air pull water out of the soil and the
+          leaves. ET0 is this amount for a reference grass field, in mm per month. Open-Meteo computes it with the official
+          FAO-56 formula from real weather (past months); for future months we use the usual value of that month (2010–2025).</li>
+        <li><b>How thirsty the crop is (Kc).</b> Each crop drinks more or less than grass, and it changes with age:
+          small after planting, highest when adult, lower before harvest. These values come from the FAO-56 tables
+          (e.g. tomato 0.60 → 1.15 → 0.80). After harvest Kc = 0.</li>
+        <li><b>The crop's need:</b> <code>ETc = ET0 × Kc</code> (mm per month).</li>
+        <li><b>Useful rain:</b> about 80 % of the rain reaches the roots; the rest runs off or evaporates:
+          <code>useful rain = 0.8 × rain</code>.</li>
+        <li><b>Water to add:</b> <code>water = ETc − useful rain</code> (never below 0). In m³ per hectare:
+          <code>× 10</code> (1 mm of water on 1 hectare = 10 m³).</li>
+      </ol>
+      <b>Example (the table above):</b> if the crop needs 128 mm in April and 51.9 mm of rain falls, useful rain = 41.5 mm,
+      so the farmer adds 128 − 41.5 = <b>86.8 mm = 868 m³ per hectare</b> that month (≈ 29 m³/ha per day).
+    </div>
+
+    <h2>📚 Datasets used</h2>
+    <table class="src">
+      <tr><th>Data</th><th>Source</th><th>Link</th></tr>
+      <tr><td>Daily rain since 2000, 24 governorates</td><td>Open-Meteo Historical Weather API (ERA5, Copernicus / EU)</td>
+        <td><a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank">Open-Meteo</a></td></tr>
+      <tr><td>Daily ET0 since 2010 (water taken by the weather)</td><td>Open-Meteo, FAO-56 Penman-Monteith formula</td>
+        <td><a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank">Open-Meteo</a></td></tr>
+      <tr><td>Crop thirst Kc + length of each growth stage (18 crops)</td><td>FAO-56, Tables 11 and 12</td>
+        <td><a href="https://www.fao.org/4/x0490e/x0490e0b.htm" target="_blank">FAO-56 chapter 6</a></td></tr>
+      <tr><td>Rain forecast model</td><td>SARIMA, Python library statsmodels</td>
+        <td><a href="https://www.statsmodels.org/stable/generated/statsmodels.tsa.statespace.sarimax.SARIMAX.html" target="_blank">statsmodels</a></td></tr>
+      <tr><td>Useful rain = 80 %</td><td>FAO CROPWAT "fixed percentage" method</td>
+        <td><a href="https://www.fao.org/land-water/databases-and-software/cropwat/en/" target="_blank">FAO CROPWAT</a></td></tr>
+    </table>
+  </section>
+</main>
+
+<script>
+let chart;
+// The Python server (app.py). Works even if this page is opened from VS Code or as a file.
+const API = location.port === "8000" ? "" : "http://localhost:8000";
+
+async function getJSON(path) {
+  let r;
+  try { r = await fetch(API + path); }
+  catch { throw new Error("The Python server is not running. In the data folder run:  uvicorn app:app --port 8000"); }
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.detail || `Server error ${r.status}`);
+  return data;
+}
+
+async function loadOptions() {
+  const o = await getJSON("/api/rainfall/options");
+  document.getElementById("region").innerHTML = o.regions.map(r => `<option>${r}</option>`).join("");
+  document.getElementById("crop").innerHTML = o.crops
+    .map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+  for (const id of ["start", "end"]) {
+    document.getElementById(id).min = o.months.first;
+    document.getElementById(id).max = o.months.last;
+  }
+  document.getElementById("region").value = "Kasserine";
+  document.getElementById("crop").value = "potato";
+}
+
+function show(d) {
+  const nice = s => s.charAt(0).toUpperCase() + s.slice(1).replace("_", " ");
+  document.getElementById("title").textContent = `${d.region} — ${nice(d.crop)}`;
+  document.getElementById("kc-source").textContent = d.kc_source;
+  document.getElementById("t-rain").textContent = `${d.total.rain_mm} mm`;
+  document.getElementById("t-need").textContent = `${d.total.crop_need_mm} mm`;
+  document.getElementById("t-add").textContent = `${d.total.water_to_add_mm} mm`;
+  document.getElementById("t-m3").textContent = `${d.total.water_to_add_m3_per_ha.toLocaleString()} m³`;
+
+  document.getElementById("rows").innerHTML = d.months.map(m => `
+    <tr><td>${m.month}</td><td>${m.rain_mm}</td>
+        <td class="${m.rain_source}">${m.rain_source}</td><td>${m.useful_rain_mm}</td><td>${m.kc}</td>
+        <td>${m.crop_need_mm}</td><td><b>${m.water_to_add_mm}</b></td><td>${m.water_to_add_m3_per_ha}</td></tr>`).join("");
+
+  const labels = d.months.map(m => m.month);
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById("chart"), {
+    type: "line",
+    data: { labels, datasets: [
+      { label: "Rainfall (mm) — real, then forecast", data: d.months.map(m => m.rain_mm),
+        borderColor: "#1e88e5", backgroundColor: "rgba(63, 81, 181, 0.15)", fill: "origin", tension: 0.35,
+        segment: { borderDash: ctx => d.months[ctx.p1DataIndex].rain_source === "forecast" ? [6, 4] : undefined } },
+      { label: "Crop ETc (monthly need in mm)", data: d.months.map(m => m.crop_need_mm),
+        borderColor: "#2e9e44", borderDash: [4, 4], fill: false, tension: 0.35 },
+      { label: "Water to add (ETc − useful rain)", data: d.months.map(m => m.water_to_add_mm),
+        borderColor: "#e05561", backgroundColor: "rgba(224, 85, 97, 0.15)", fill: "origin", tension: 0.35 },
+    ]},
+    options: {
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: { title: { display: true, text: "Rainfall vs Crop Water Requirement (ETc)" } },
+      scales: { y: { beginAtZero: true, title: { display: true, text: "Millimeters (mm)" } },
+                x: { title: { display: true, text: "Month" } } },
+    },
+  });
+  document.getElementById("result").style.display = "block";
+}
+
+document.getElementById("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const q = new URLSearchParams({
+    region: document.getElementById("region").value, crop: document.getElementById("crop").value,
+    start: document.getElementById("start").value, end: document.getElementById("end").value });
+  document.getElementById("error").textContent = "";
+  try { show(await getJSON(`/api/rainfall/forecast?${q}`)); }
+  catch (err) { document.getElementById("error").textContent = err.message; }
+});
+
+loadOptions().catch(err => document.getElementById("error").textContent = err.message);
+</script>
+</body>
+</html>

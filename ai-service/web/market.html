@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tunisian Market Forecast</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root { --green: #2e7d32; --dark: #1b4332; --line: #dfe5df; --soft: #f4f6f4; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: #fff; color: #222; }
+  main { max-width: 1000px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { color: var(--dark); font-size: 28px; margin: 0 0 18px; }
+  h2 { color: var(--dark); font-size: 21px; margin: 30px 0 10px; }
+  .menu { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .menu a { padding: 8px 14px; border-radius: 4px; text-decoration: none; color: var(--dark); border: 1px solid var(--line); }
+  .menu a.on { background: var(--green); color: #fff; border-color: var(--green); }
+  .controls { display: flex; flex-wrap: wrap; gap: 16px; background: var(--soft); padding: 12px 14px; border-radius: 6px; }
+  label { display: flex; flex-direction: column; gap: 5px; font-size: 14px; color: #444; }
+  select { padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; background: #fff; min-width: 180px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); }
+  th { background: #e8f5e9; }
+  td.num { text-align: right; }
+  .down { color: #c62828; font-weight: 700; }
+  .tag { border-radius: 10px; padding: 1px 8px; font-size: 12px; margin-left: 4px; }
+  .tag.lack { background: #e8f5e9; border: 1px solid #66bb6a; }
+  .tag.full { background: #fff4e5; border: 1px solid #f0c070; }
+  .ynote { color: #a15c00; }
+  .chart { position: relative; height: 320px; }
+  .box { background: var(--soft); border-radius: 6px; padding: 12px 16px; font-size: 14px; line-height: 1.7; }
+  #error { color: #b71c1c; margin-top: 10px; }
+  .note { color: #555; font-size: 14px; margin: 0 0 10px; line-height: 1.6; }
+  button { padding: 10px 18px; background: var(--green); color: #fff; border: 0; border-radius: 4px; font-size: 15px;
+           font-weight: 600; cursor: pointer; margin-bottom: 12px; }
+  table.mini { margin: 8px 0 14px; font-size: 13px; background: #fff; }
+  .box code { background: #fff; padding: 1px 5px; border: 1px solid var(--line); border-radius: 3px; }
+</style>
+</head>
+<body>
+<main>
+  <nav class="menu"><a href="/">🌧️ Rainfall &amp; water</a><a href="/soil-map">🗺️ Soil map</a><a href="/crops">🌱 Crop suitability</a><a href="/market" class="on">📈 Market</a><a href="/chat">💬 Khiratna</a></nav>
+  <h1>📈 Tunisian Market Forecast (2027)</h1>
+  <div id="error"></div>
+
+  <h2>🔻 Part 1 — What will Tunisia lack in 2027? <small style="font-weight:400;color:#666">(whole country)</small></h2>
+  <p class="note">National FAO statistics: the same answer for every governorate. No input needed.</p>
+  <button id="go-lacks">Show the 2027 forecast</button>
+  <div id="lacks-result" style="display:none">
+    <table id="lacks"></table>
+    <div class="controls" style="margin-top:14px"><label>See one product year by year: <select id="product"></select></label></div>
+    <div class="chart"><canvas id="chart"></canvas></div>
+  </div>
+
+  <h2>💰 Part 2 — Which crop earns the most for MY water?</h2>
+  <p class="note">Your governorate and planting month change <b>only the water to add</b> (service 1: rain and heat of your region,
+    crop season from the planting month). Example: watermelon planted in April needs <b>4 044 m³/ha in Nabeul</b>
+    but <b>6 634 m³/ha in Kebili</b> (hotter, drier). Prices and yields are national (FAOSTAT).</p>
+  <div class="controls">
+    <label>My governorate: <select id="region"></select></label>
+    <label>Planting month: <select id="planting"></select></label>
+    <button id="go-earns" style="align-self:end">Calculate</button>
+  </div>
+  <div id="earns-result" style="display:none"><table id="earns"></table><div id="season"></div>
+    <p class="note" style="margin-top:8px"><b>Tunisia lacks it</b> = Tunisia produces less than 90 % of what it needs: a safe market.
+      <b>Market already full</b> = Tunisia already produces 100 % or more: if many farmers plant it, the price can fall.<br>
+      Dinars per m³ = revenue per hectare ÷ water to add in your governorate.
+      Only crops that can be sown in the open field in the chosen month are ranked
+      (<a href="https://cropcalendar.apps.fao.org" target="_blank">FAO crop calendar of Tunisia</a>); fruit trees are already in the field.
+      <a href="/">See the water month by month in 🌧️ Rainfall &amp; water →</a></p></div>
+
+  <h2>📚 The data and the logic, step by step</h2>
+  <div class="box">
+    <b>Data:</b> <a href="https://www.fao.org/faostat/en/#data" target="_blank">FAOSTAT</a> (statistics of the FAO, United Nations),
+    3 files, only the Tunisia rows kept:
+    <table class="mini">
+      <tr><th>File</th><th>What a row looks like (real rows)</th></tr>
+      <tr><td><code>tunisia_production.csv</code><br><a href="https://www.fao.org/faostat/en/#data/QCL" target="_blank">FAOSTAT QCL</a></td>
+        <td>Wheat · Production · 2024 · <b>1 150 000 t</b><br>Wheat · Area harvested · 2024 · 536 000 ha<br>Watermelons · Yield · 2024 · 108 448 kg/ha</td></tr>
+      <tr><td><code>tunisia_trade.csv</code><br><a href="https://www.fao.org/faostat/en/#data/TCL" target="_blank">FAOSTAT TCL</a></td>
+        <td>Wheat · Import quantity · 2024 · <b>1 397 090 t</b><br>Wheat · Export quantity · 2024 · 0 t</td></tr>
+      <tr><td><code>tunisia_prices.csv</code><br><a href="https://www.fao.org/faostat/en/#data/PP" target="_blank">FAOSTAT PP</a></td>
+        <td>Watermelons · Producer price · 2022 · <b>624 TND/t</b><br>Watermelons · Price index · 2022 · 221.0 → 2025 · 215.7 (FAO estimate)</td></tr>
+    </table>
+    <b>Part 1 — Wheat:</b><br>
+    ① consumption 2024 = production + imports − exports = 1 150 000 + 1 397 090 − 0 = <b>2 547 090 t</b><br>
+    ② self-sufficiency 2024 = 1 150 000 ÷ 2 547 090 = <b>45 %</b><br>
+    ③ the <b>Theta</b> time-series model learns production and consumption 2000–2024 and forecasts 2027:
+       production 1 005 150 t, consumption 2 784 270 t → self-sufficiency <b>36 %</b>, missing <b>1 779 120 t</b>.<br>
+       (Tested on past years: about 7–10 % error.)<br><br>
+    <b>Part 2 — Watermelon in Nabeul, planted in April:</b><br>
+    ① farm price 2025 = 624 × 215.7 ÷ 221.0 = <b>609 TND/t</b><br>
+    ② yield = average 2022–2024 = <b>103.2 t/ha</b> → revenue = 103.2 × 609 = <b>62 826 TND/ha</b> (before costs)<br>
+    ③ water to add (service 1, Nabeul, April) = <b>4 044 m³/ha</b><br>
+    ④ dinars per m³ = 62 826 ÷ 4 044 = <b>15.5 TND per m³ of water</b>
+  </div>
+</main>
+
+<script>
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const NAMES = { wheat: "Wheat", barley: "Barley", maize: "Maize", sorghum: "Sorghum", potato: "Potato", tomato: "Tomato",
+  onion: "Onion", pepper: "Pepper", carrot: "Carrot", lettuce: "Lettuce", watermelon: "Watermelon", melon: "Melon",
+  artichoke: "Artichoke", strawberry: "Strawberry", chickpea: "Chickpea", faba_bean: "Faba bean", lentil: "Lentil",
+  orange: "Orange", tangerine: "Tangerine", lemon: "Lemon", grapes: "Grapes", almond: "Almond", apricot: "Apricot",
+  peach: "Peach", apple: "Apple", fig: "Fig", pistachio: "Pistachio", olive: "Olive", olive_oil: "Olive oil", dates: "Dates" };
+let chart;
+
+async function getJSON(path) {
+  const API = location.port === "8000" ? "" : "http://localhost:8000";
+  let r;
+  try { r = await fetch(API + path); }
+  catch { throw new Error("The Python server is not running. Double-click ai-service/start_api.bat"); }
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.detail || `Server error ${r.status}`);
+  return data;
+}
+const n = v => Math.round(v).toLocaleString("en-US");
+const show = e => document.getElementById("error").textContent = e.message;
+
+async function loadLacks() {
+  const r = await getJSON("/api/market/overview");          // national: no governorate needed
+  document.getElementById("lacks").innerHTML =
+    `<tr><th>Product</th><th>Self-sufficiency 2024 → 2027</th><th class="num">Missing in 2027</th></tr>` +
+    r.lacks.filter(p => p.missing_2027_t >= 1000).map(p => `<tr><td><b>${NAMES[p.product]}</b></td>
+      <td>${Math.round(p.self_sufficiency_2024)} % → <span class="${p.self_sufficiency_2027 < p.self_sufficiency_2024 ? "down" : ""}">${Math.round(p.self_sufficiency_2027)} %</span></td>
+      <td class="num">${n(p.missing_2027_t)} t</td></tr>`).join("");
+  document.getElementById("lacks-result").style.display = "block";
+  await drawProduct(document.getElementById("product").value);
+}
+
+async function loadEarns() {
+  const region = document.getElementById("region").value, month = document.getElementById("planting").value;
+  if (!region || !month) throw new Error("Choose your governorate and your planting month.");
+  const r = await getJSON(`/api/market/overview?${new URLSearchParams({ region, planting_month: month })}`);
+  document.getElementById("earns").innerHTML =
+    `<tr><th>Product</th><th class="num">Revenue per hectare</th><th class="num">Dinars per m³ of water</th></tr>` +
+    r.per_water.slice(0, 10).map(p => `<tr><td><b>${NAMES[p.product]}</b>
+      ${p.tunisia_lacks_it ? '<span class="tag lack">Tunisia lacks it</span>' : ""}
+      ${p.market_full ? '<span class="tag full">market already full</span>' : ""}
+      ${p.yield_note ? `<br><small class="ynote">⚠️ ${p.yield_note}</small>` : ""}</td>
+      <td class="num">${n(p.revenue_tnd_per_ha)} TND</td>
+      <td class="num"><b>${p.tnd_per_m3_water}</b> TND</td></tr>`).join("");
+  const MON = MONTHS[month - 1];
+  document.getElementById("season").innerHTML =
+    (r.protected_only.length ? `<p class="note">🏠 <b>Only under tunnel or greenhouse in ${MON}</b> (extra costs, not in the revenue): ` +
+      r.protected_only.map(p => `${NAMES[p.product]} (${p.tnd_per_m3_water} TND/m³)`).join(", ") + `</p>` : "") +
+    (r.frost_risk.length ? `<p class="note">❄️ <b>Frost risk in ${r.region} in ${MON}</b> (NASA frost days), so not ranked: ` +
+      r.frost_risk.map(p => NAMES[p]).join(", ") + `</p>` : "") +
+    (r.not_in_season.length ? `<p class="note">🚫 <b>Not sown in ${MON} in Tunisia</b> (FAO crop calendar), so not ranked: ` +
+      r.not_in_season.map(p => NAMES[p]).join(", ") + `</p>` : "");
+  document.getElementById("earns-result").style.display = "block";
+}
+
+async function drawProduct(id) {
+  const h = await getJSON(`/api/market/history?product=${id}`);
+  const fc = h.years.map(y => y.source === "forecast");
+  const dash = ctx => fc[ctx.p1DataIndex] ? [6, 4] : undefined;
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById("chart"), {
+    type: "line",
+    data: { labels: h.years.map(y => y.year), datasets: [
+      { label: "Consumption (t)", data: h.years.map(y => y.consumption), borderColor: "#c62828", tension: 0.25, segment: { borderDash: dash } },
+      { label: "Production (t)", data: h.years.map(y => y.production), borderColor: "#2e7d32", tension: 0.25, segment: { borderDash: dash } },
+    ]},
+    options: { maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+      plugins: { title: { display: true, text: `${NAMES[id]}: real until 2024, forecast (dashed) to 2027` } },
+      scales: { y: { beginAtZero: true } } },
+  });
+}
+
+(async () => {
+  try {
+    const o = await getJSON("/api/rainfall/options");
+    document.getElementById("region").innerHTML = `<option value="">— choose —</option>` +
+      o.regions.map(r => `<option>${r}</option>`).join("");
+    document.getElementById("planting").innerHTML = `<option value="">— choose —</option>` +
+      MONTHS.map((m, i) => `<option value="${i + 1}">${m}</option>`).join("");
+    document.getElementById("product").innerHTML = Object.entries(NAMES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+  } catch (err) { show(err); }
+})();
+document.getElementById("go-lacks").addEventListener("click", () => { show({ message: "" }); loadLacks().catch(show); });
+document.getElementById("go-earns").addEventListener("click", () => { show({ message: "" }); loadEarns().catch(show); });
+document.getElementById("product").addEventListener("change", e => drawProduct(e.target.value).catch(show));
+</script>
+</body>
+</html>
