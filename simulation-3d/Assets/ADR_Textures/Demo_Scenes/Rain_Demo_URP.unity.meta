@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 36547553276ffb341870a62398e66cc7
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 394420
+  packageName: Rain particle effects (URP)
+  packageVersion: 1.0.1
+  assetPath: Assets/ADR_Textures/Demo_Scenes/Rain_Demo_URP.unity
+  uploadId: 983326
